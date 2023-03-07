@@ -26,9 +26,9 @@ void sendTemp(){
 
 void setup() {
   // put your setup code here, to run once:
-  pinMode(RelayIn, INPUT);
-  pinMode(ServoIn, INPUT);
-  pinMode(RelayPin, OUTPUT);  
+  //pinMode(RelayIn, INPUT);
+  //pinMode(ServoIn, INPUT);
+  //pinMode(RelayPin, OUTPUT);  
   Serial.begin(96000);
   MG90s.attach(ServoPin);
   MG90s.write(0);
@@ -53,8 +53,10 @@ BLYNK_WRITE(V2){
   int pinValue = param.asInt();
 
   if (pinValue == 1){
+    pinMode(RelayPin, OUTPUT);
     digitalWrite(RelayPin, HIGH);
   }else{
+    pinMode(RelayPin, INPUT);
     digitalWrite(RelayPin, LOW);
   }
 }
