@@ -15,8 +15,8 @@ OneWire oneWire(DS18Pin);
 DallasTemperature sensors(&oneWire);
 
 char auth[] = "fE-5JokC8_4jQufTxFZp3xiwk7RzlecC";
-char ssid[] = "OPPO A15";
-char pass[] = "pecellele";
+char ssid[] = "SMKN2YK_IoT";
+char pass[] = "smkn2ykyes";
 
 void sendTemp(){
   sensors.requestTemperatures();
@@ -63,10 +63,15 @@ BLYNK_WRITE(V2){
 
 void loop() {
   // put your main code here, to run repeatedly:
-  bool switchStat = digitalRead(RelayIn);
-  if (switchStat == LOW){
+  sensors.requestTemperatures();
+  int t = sensors.getTempCByIndex(0);
+  Serial.print("Suhu : ");
+  Serial.print(t);
+  if (t <= 28){
+    pinMode(RelayPin, OUTPUT);
     digitalWrite(RelayPin, HIGH);
   }else{
+    pinMode(RelayPin, INPUT);
     digitalWrite(RelayPin, LOW);
   }
   Blynk.run();
