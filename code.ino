@@ -1,3 +1,4 @@
+#include <LiquidCrystal_I2C.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <Servo.h>
@@ -6,17 +7,19 @@
 #define ServoPin 12 // D6
 #define DS18Pin 2 // D4
 #define RelayPin 14 // D5
-#define RelayIn 15 // D8
+#define Switch1Pin 13 // D7 Servo
+#define Switch2Pin 15 // D8 Relay
 #define ServoIn 16 // D0
 
 BlynkTimer timer;
 Servo MG90s;
 OneWire oneWire(DS18Pin);
 DallasTemperature sensors(&oneWire);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 char auth[] = "fE-5JokC8_4jQufTxFZp3xiwk7RzlecC";
-char ssid[] = "SMKN2YK_IoT";
-char pass[] = "smkn2ykyes";
+char ssid[] = "andaikan";
+char pass[] = "12345678";
 
 void sendTemp(){
   sensors.requestTemperatures();
@@ -28,12 +31,20 @@ void setup() {
   // put your setup code here, to run once:
   //pinMode(RelayIn, INPUT);
   //pinMode(ServoIn, INPUT);
-  //pinMode(RelayPin, OUTPUT);  
-  Serial.begin(96000);
+  pinMode(RelayPin, OUTPUT);  
+  pinMode(Switch1Pin, OUTPUT);
+  pinMode(Switch2Pin, OUTPUT);
+  Serial.begin(9600);
+  lcd.init();
+  lcd.backlight();
   MG90s.attach(ServoPin);
   MG90s.write(0);
   Blynk.begin(auth, ssid, pass, IPAddress(41, 216, 186, 178), 8080);
   timer.setInterval(1000L, sendTemp);
+  lcd.setCursor(0,0);
+  lcd.print("SMART");
+  lcd.setCursor(0,1);
+  lcd.print("AQUARIUM");
 }
 
 BLYNK_WRITE(V1){
@@ -74,6 +85,15 @@ void loop() {
     pinMode(RelayPin, INPUT);
     digitalWrite(RelayPin, LOW);
   }
+
+  lcd.setCursor(0, 0);
+  lcd.print("SMART AQUARIUM");
+  lcd.setCursor(0, 1);
+  lcd.print("SUHU : ");
+  lcd.print(t);
+  lcd.print(" C");
+  
+  
   Blynk.run();
   timer.run();
 }
