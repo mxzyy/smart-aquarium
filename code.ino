@@ -16,6 +16,7 @@ Servo MG90s;
 OneWire oneWire(DS18Pin);
 DallasTemperature sensors(&oneWire);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+bool Lampu = false;
 
 char auth[] = "fE-5JokC8_4jQufTxFZp3xiwk7RzlecC";
 char ssid[] = "andaikan";
@@ -79,6 +80,28 @@ void loop() {
   Serial.print("Suhu : ");
   Serial.print(t);
   if (t <= 28){
+    pinMode(RelayPin, OUTPUT);
+    digitalWrite(RelayPin, HIGH);
+  }else{
+    pinMode(RelayPin, INPUT);
+    digitalWrite(RelayPin, LOW);
+  }
+
+if (digitalRead(Switch2Pin) == HIGH){
+    MG90s.write(180);
+    delay(800);
+    Blynk.virtualWrite(V1, LOW);
+    MG90s.write(0);
+  }else{
+    MG90s.write(0);
+}
+  if (digitalRead(Switch1Pin) == HIGH){
+    bool Lampu = true;
+  }else{
+    bool Lampu = false;
+  }
+
+  if (Lampu == true){
     pinMode(RelayPin, OUTPUT);
     digitalWrite(RelayPin, HIGH);
   }else{
